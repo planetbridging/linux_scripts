@@ -57,5 +57,5 @@ done
 
 for i in ${lst_ports_clean[@]}; do
 	echo $i
-	echo $i >> port_$1.txt
+	echo $i >> port_scan/port_$1.txt
 done
