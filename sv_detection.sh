@@ -15,10 +15,10 @@
 
 open_ports=()
 
-ports_ss=$(eval nmap -sV -vv -p $2 -sS -oX sv_detection/$1_ss.txt $1 | awk '/open/{ s = ""; for (i = 5; i <= NF-4; i++) s = s substr($i,1,length($i)-4) "\n"; print $2 " " $3 "\n" s}')
-ports_st=$(eval nmap -sV -vv -p $2 -sT -oX sv_detection/$1_st.txt $1 | awk '/open/{ s = ""; for (i = 5; i <= NF-4; i++) s = s substr($i,1,length($i)-4) "\n"; print $2 " " $3 "\n" s}')
-ports_sa=$(eval nmap -sV -vv -p $2 -sA -oX sv_detection/$1_sa.txt $1 | awk '/open/{ s = ""; for (i = 5; i <= NF-4; i++) s = s substr($i,1,length($i)-4) "\n"; print $2 " " $3 "\n" s}')
-
+echo "Scanning " $1
+ports_ss=$(eval nmap -sV -vv -sS -oX sv_detection/$1_ss.txt $1 | awk '/open/{ s = ""; for (i = 5; i <= NF-4; i++) s = s substr($i,1,length($i)-4) "\n"; print $2 " " $3 "\n" s}')
 echo $ports_ss
+ports_st=$(eval nmap -sV -vv -sT -oX sv_detection/$1_st.txt $1 | awk '/open/{ s = ""; for (i = 5; i <= NF-4; i++) s = s substr($i,1,length($i)-4) "\n"; print $2 " " $3 "\n" s}')
 echo $ports_st
+ports_sa=$(eval nmap -sV -vv -sA -oX sv_detection/$1_sa.txt $1 | awk '/open/{ s = ""; for (i = 5; i <= NF-4; i++) s = s substr($i,1,length($i)-4) "\n"; print $2 " " $3 "\n" s}')
 echo $ports_sa
