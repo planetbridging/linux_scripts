@@ -1,0 +1,51 @@
+---
+- name: Setup Docker Swarm and Swarmpit
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+
+    - name: Check if Docker Swarm is already initialized
+      command: docker info --format '{{ "{{" }}.Swarm.LocalNodeState{{ "}}" }}'
+      register: swarm_status
+      changed_when: false
+
+    - name: Initialize Docker Swarm
+      command: docker swarm init
+      when: swarm_status.stdout != "active"
+      ignore_errors: yes
+
+    - name: Install git (required to clone Swarmpit repo)
+      apt:
+        name: git
+        state: present
+
+    - name: Clone Swarmpit repository
+      git:
+        repo: "https://github.com/swarmpit/swarmpit.git"
+        dest: "/tmp/swarmpit"
+        clone: yes
+        update: yes
+
+    - name: Deploy Swarmpit using Docker Stack
+      command: docker stack deploy -c /tmp/swarmpit/docker-compose.yml swarmpit
+      register: deploy_result
+      changed_when: "'New stack' in deploy_result.stdout or 'Updating stack' in deploy_result.stdout"
+
+    - name: Wait for Swarmpit to start
+      wait_for:
+        port: 888
+        delay: 10
+        timeout: 60

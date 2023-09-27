@@ -1,0 +1,3 @@
+ansible-playbook -i hosts.ini setup_docker_swarm.yml --ask-become-pass --ask-pass
+http://100.0.0.201:888
+docker stack services swarmpit
