@@ -25,5 +25,5 @@ crontab -e
 ```
 
 ```
-@reboot nohup ~/logs/log_cpu_ram.sh > /dev/null 2>&1 &
+* * * * * ~/logs/log_cpu_ram.sh
 ```
